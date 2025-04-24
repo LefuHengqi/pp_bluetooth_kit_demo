@@ -2,6 +2,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_apple.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_banana.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_coconut.dart';
 import 'package:pp_bluetooth_kit_flutter/ble/pp_bluetooth_kit_manager.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
@@ -69,14 +71,40 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   void _handleDeviceTap(PPDeviceModel device, int index) {
-    if (device.getDevicePeripheralType() == PPDevicePeripheralType.apple) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DeviceApple(device: device),
-        ),
-      );
+
+    switch(device.getDevicePeripheralType()) {
+      case PPDevicePeripheralType.apple:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceApple(device: device),
+          ),
+        );
+
+        break;
+      case PPDevicePeripheralType.coconut:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceCoconut(device: device),
+          ),
+        );
+
+        break;
+      case PPDevicePeripheralType.banana:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceBanana(device: device),
+          ),
+        );
+
+        break;
+      default:
+        print('undefined-${device.getDevicePeripheralType()}');
+        break;
     }
+
   }
 
 

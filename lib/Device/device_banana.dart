@@ -3,26 +3,23 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pp_bluetooth_kit_demo/Common/Define.dart';
 import 'package:pp_bluetooth_kit_demo/Common/custom_widgets.dart';
+import 'package:pp_bluetooth_kit_demo/Common/define.dart';
 import 'package:pp_bluetooth_kit_flutter/ble/pp_bluetooth_kit_manager.dart';
-import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_apple.dart';
+import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_banana.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
-import 'package:pp_bluetooth_kit_flutter/model/pp_body_base_model.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
-import 'package:pp_bluetooth_kit_flutter/model/pp_device_user.dart';
-import 'package:pp_bluetooth_kit_flutter/model/pp_wifi_result.dart';
 
-class DeviceApple extends StatefulWidget {
+class DeviceBanana extends StatefulWidget {
   final PPDeviceModel device;
 
-  const DeviceApple({Key? key, required this.device}) : super(key: key);
+  const DeviceBanana({Key? key, required this.device}) : super(key: key);
 
   @override
-  State<DeviceApple> createState() => _DeviceAppleState();
+  State<DeviceBanana> createState() => _DeviceBananaState();
 }
 
-class _DeviceAppleState extends State<DeviceApple> {
+class _DeviceBananaState extends State<DeviceBanana> {
 
   final ScrollController _gridController = ScrollController();
   final ScrollController _scrollController = ScrollController();
@@ -33,13 +30,7 @@ class _DeviceAppleState extends State<DeviceApple> {
   String _measurementStateStr = '';
 
   final List<GridItem> _gridItems = [
-    GridItem(DeviceMenuType.syncTime.value),
-    GridItem(DeviceMenuType.changeUnit.value),
-    GridItem(DeviceMenuType.fetchHistory.value),
-    GridItem(DeviceMenuType.getPower.value),
-    GridItem(DeviceMenuType.configNetwork.value),
-    GridItem(DeviceMenuType.queryWifiConfig.value),
-    GridItem(DeviceMenuType.getDeviceInfo.value),
+
   ];
 
   @override
@@ -48,6 +39,10 @@ class _DeviceAppleState extends State<DeviceApple> {
     final ppDevice = widget.device;
     PPBluetoothKitManager.connectDevice(ppDevice, callBack: (state) {
       _updateText('connection status：$state');
+
+      _updateText('receiveDeviceData');
+      //Receive broadcast data
+      PPPeripheralBanana.receiveDeviceData(ppDevice);
 
       _connectionStatus = state;
       if (mounted) {
@@ -88,81 +83,6 @@ class _DeviceAppleState extends State<DeviceApple> {
     if (_connectionStatus != PPDeviceConnectionState.connected) {
       _updateText('Device Disconnect');
       return;
-    }
-
-    try {
-
-      if (title == DeviceMenuType.syncTime.value) {
-        _updateText('syncTime');
-
-        final ret = await PPPeripheralApple.syncTime();
-
-        _updateText('syncTime-return:$ret');
-
-      }
-      if (title == DeviceMenuType.changeUnit.value) {
-        _updateText('syncUnit:$_unit');
-        _unit = _unit == PPUnitType.Unit_KG ? PPUnitType.Unit_LB : PPUnitType.Unit_KG;
-        final deviceUser = PPDeviceUser(unitType: _unit,age: 20, userHeight: 170, sex: PPUserGender.female);
-        await PPPeripheralApple.syncUnit(deviceUser);
-
-      }
-      if (title == DeviceMenuType.fetchHistory.value) {
-        _updateText('fetchHistoryData');
-        PPPeripheralApple.fetchHistoryData(callBack: (dataList, isSuccess){
-          _updateText('History data count:${dataList.length}');
-
-          if (isSuccess && dataList.length > 0) {
-            _updateText('Perform deletion of historical data:deleteHistoryData');
-            PPPeripheralApple.deleteHistoryData();
-          }
-
-          for (PPBodyBaseModel model in dataList) {
-            print('history weight:${model.weight} isSuccess:$isSuccess');
-          }
-
-        });
-
-      }
-      if (title == DeviceMenuType.getPower.value) {
-        _updateText('fetchBatteryInfo');
-        PPPeripheralApple.fetchBatteryInfo(continuity: true, callBack: (power) {
-          _updateText('power:$power');
-        });
-
-      }
-      if (title == DeviceMenuType.configNetwork.value) {
-
-        _showWifiInputDialog(context, (ssid, password) async {
-          _updateText('configWifi');
-          _updateText('ssid:$ssid password:$password');
-          _updateText('Please wait...');
-
-          // ‘domain’ needs to use the domain name configured by your server
-          PPWifiResult result = await PPPeripheralApple.configWifi(domain: "http://120.79.144.170:6032", ssId: ssid, password: password);
-          _updateText('Distribution network results:${result.success}');
-        });
-      }
-      if (title == DeviceMenuType.queryWifiConfig.value) {
-        _updateText('fetchWifiInfo');
-        final ssId = await PPPeripheralApple.fetchWifiInfo().timeout(const Duration(seconds: 5));
-        _updateText('ssId:$ssId');
-      }
-      if (title == DeviceMenuType.getDeviceInfo.value) {
-        _updateText('fetchDeviceInfo');
-        final device180AModel = await PPPeripheralApple.fetchDeviceInfo().timeout(const Duration(seconds: 5));
-        _updateText('firmwareRevision:${device180AModel?.firmwareRevision} modelNumber:${device180AModel?.modelNumber}');
-      }
-
-
-    } on TimeoutException catch (e) {
-      final msg = 'TimeoutException:$e';
-      print(msg);
-      _updateText(msg);
-    } catch(e) {
-      final msg = 'Exception:$e';
-      print(msg);
-      _updateText(msg);
     }
   }
 
@@ -261,7 +181,7 @@ class _DeviceAppleState extends State<DeviceApple> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Apple')),
+      appBar: AppBar(title: const Text('Banana')),
       body: Column(
         children: [
           Container(
@@ -347,4 +267,3 @@ class _DeviceAppleState extends State<DeviceApple> {
     );
   }
 }
-
