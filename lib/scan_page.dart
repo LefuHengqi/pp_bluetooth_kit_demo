@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_apple.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_banana.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_coconut.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_ice.dart';
 import 'package:pp_bluetooth_kit_flutter/ble/pp_bluetooth_kit_manager.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
@@ -80,7 +81,6 @@ class _ScanPageState extends State<ScanPage> {
             builder: (context) => DeviceApple(device: device),
           ),
         );
-
         break;
       case PPDevicePeripheralType.coconut:
         Navigator.push(
@@ -89,7 +89,6 @@ class _ScanPageState extends State<ScanPage> {
             builder: (context) => DeviceCoconut(device: device),
           ),
         );
-
         break;
       case PPDevicePeripheralType.banana:
         Navigator.push(
@@ -98,7 +97,14 @@ class _ScanPageState extends State<ScanPage> {
             builder: (context) => DeviceBanana(device: device),
           ),
         );
-
+        break;
+      case PPDevicePeripheralType.ice:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceIce(device: device),
+          ),
+        );
         break;
       default:
         print('undefined-${device.getDevicePeripheralType()}');

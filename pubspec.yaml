@@ -31,11 +31,14 @@ dependencies:
   flutter:
     sdk: flutter
 
+# 运行鸿蒙，需要换成鸿蒙的版本
+  path_provider: ^2.1.1
+
 ## Flutter蓝牙库插件
   pp_bluetooth_kit_flutter:
     git:
       url: https://gitee.com/shenzhen-lfscale/ppbluetoothkitflutter.git
-      ref: 0.0.9
+      ref: 0.0.11
 
 
   # The following adds the Cupertino Icons font to your application.

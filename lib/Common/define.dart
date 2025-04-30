@@ -19,6 +19,13 @@ enum DeviceMenuType {
   testOTA('Start Test OTA'),
   userOTA('Start User OTA'),
   getDeviceInfo('Get device information'),
+  turnOnHeartRate('Turn on the heart rate'),
+  turnOffHeartRate('Turn off heart rate'),
+  getHeartRateSW('Get the heart rate switch'),
+  turnOnImpedance('Turn on the impedance switch'),
+  turnOffImpedance('Turn off the impedance switch'),
+  getImpedanceSW('Get impedance switch'),
+  syncDeviceLog('Sync device logs'),
   getPower('Get power');
 
   final String value;
