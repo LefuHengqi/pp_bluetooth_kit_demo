@@ -1,61 +1,57 @@
-
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pp_bluetooth_kit_demo/Common/Define.dart';
 import 'package:pp_bluetooth_kit_demo/Common/custom_widgets.dart';
 import 'package:pp_bluetooth_kit_flutter/ble/pp_bluetooth_kit_manager.dart';
-import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_banana.dart';
+import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_egg.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
 
-class DeviceBanana extends StatefulWidget {
+
+class DeviceEgg extends StatefulWidget {
   final PPDeviceModel device;
 
-  const DeviceBanana({Key? key, required this.device}) : super(key: key);
+  const DeviceEgg({Key? key, required this.device}) : super(key: key);
 
   @override
-  State<DeviceBanana> createState() => _DeviceBananaState();
+  State<DeviceEgg> createState() => _DeviceEggState();
 }
 
-class _DeviceBananaState extends State<DeviceBanana> {
+class _DeviceEggState extends State<DeviceEgg> {
 
   final ScrollController _gridController = ScrollController();
   final ScrollController _scrollController = ScrollController();
   String _dynamicText = '';
+  PPUnitType _unit = PPUnitType.Unit_KG;
+  PPDeviceConnectionState _connectionStatus = PPDeviceConnectionState.disconnected;
   double _weightValue = 0;
   String _measurementStateStr = '';
 
   final List<GridItem> _gridItems = [
-
+    GridItem(DeviceMenuType.changeUnit.value),
+    GridItem(DeviceMenuType.toZero.value),
   ];
 
   @override
   void initState() {
 
+    final ppDevice = widget.device;
+    PPBluetoothKitManager.connectDevice(ppDevice, callBack: (state) {
+      _updateText('connection status：$state');
 
-    PPBluetoothKitManager.startScan((ppDevice) {
-
-      if (ppDevice.deviceMac == ppDevice.deviceMac) {
-
-        PPBluetoothKitManager.stopScan();
-
-        _updateText('receiveDeviceData');
-        //Receive broadcast data
-        PPPeripheralBanana.receiveDeviceData(ppDevice);
-
-        if (mounted) {
-          setState(() {});
-        }
+      _connectionStatus = state;
+      if (mounted) {
+        setState(() {});
       }
-
     });
 
-    // Listen to the measurement data, only the last one of the multiple listeners will take effect, it is recommended that the app registers only one globally.
-    PPBluetoothKitManager.addMeasurementListener(callBack: (measurementState, dataModel, device) {
-      _weightValue = dataModel.weight / 100.0;
+    // Listen to the measurement data, only the last one of the multiple listeners will take effect.
+    PPBluetoothKitManager.addKitchenMeasurementListener(callBack: (measurementState, dataModel, device) {
+      _weightValue = dataModel.weight / 10.0;
 
-      final msg = 'weight:$_weightValue measurementState:$measurementState dataModel:${dataModel.toJson()}';
+      final msg = 'weight:$_weightValue measurementState:$measurementState';
       print(msg);
 
       switch (measurementState) {
@@ -85,6 +81,38 @@ class _DeviceBananaState extends State<DeviceBanana> {
     super.initState();
   }
 
+  Future<void> _handle(String title) async {
+    if (_connectionStatus != PPDeviceConnectionState.connected) {
+      _updateText('Device Disconnect');
+      return;
+    }
+
+    try {
+
+      if (title == DeviceMenuType.changeUnit.value) {
+        _updateText('syncUnit:$_unit');
+        _unit = _unit == PPUnitType.UnitG ? PPUnitType.UnitMLWater : PPUnitType.UnitG;
+        final ret = await PPPeripheralEgg.syncUnit(_unit).timeout(const Duration(seconds: 3));
+        _updateText('syncUnit-return:$ret');
+      }
+
+      if (title == DeviceMenuType.toZero.value) {
+        _updateText('toZero');
+        final ret = PPPeripheralEgg.toZero().timeout(const Duration(seconds: 3));
+        _updateText('toZero-return:$ret');
+
+      }
+
+    } on TimeoutException catch (e) {
+      final msg = 'TimeoutException:$e';
+      print(msg);
+      _updateText(msg);
+    } catch(e) {
+      final msg = 'Exception:$e';
+      print(msg);
+      _updateText(msg);
+    }
+  }
 
 
   void _updateText(String text) {
@@ -104,6 +132,9 @@ class _DeviceBananaState extends State<DeviceBanana> {
     });
   }
 
+
+
+
   @override
   void dispose() {
     _gridController.dispose();
@@ -116,7 +147,7 @@ class _DeviceBananaState extends State<DeviceBanana> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Banana')),
+      appBar: AppBar(title: const Text('Egg')),
       body: Column(
         children: [
           Container(
@@ -126,12 +157,12 @@ class _DeviceBananaState extends State<DeviceBanana> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Broadcasting Device',
+                  '${_connectionStatus == PPDeviceConnectionState.connected ? ' connected' : ' disconnect'}',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'weight: $_weightValue KG    $_measurementStateStr',
+                  'weight: $_weightValue g    $_measurementStateStr',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -188,6 +219,7 @@ class _DeviceBananaState extends State<DeviceBanana> {
 
                         final model = _gridItems[index];
                         final title = model.title;
+                        _handle(title);
 
                       },
                     );

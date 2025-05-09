@@ -5,24 +5,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pp_bluetooth_kit_demo/Common/custom_widgets.dart';
 import 'package:pp_bluetooth_kit_flutter/ble/pp_bluetooth_kit_manager.dart';
-import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_banana.dart';
+import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_jambul.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
 
-class DeviceBanana extends StatefulWidget {
+class DeviceJambul extends StatefulWidget {
   final PPDeviceModel device;
 
-  const DeviceBanana({Key? key, required this.device}) : super(key: key);
+  const DeviceJambul({Key? key, required this.device}) : super(key: key);
 
   @override
-  State<DeviceBanana> createState() => _DeviceBananaState();
+  State<DeviceJambul> createState() => _DeviceJambulState();
 }
 
-class _DeviceBananaState extends State<DeviceBanana> {
+class _DeviceJambulState extends State<DeviceJambul> {
 
   final ScrollController _gridController = ScrollController();
   final ScrollController _scrollController = ScrollController();
   String _dynamicText = '';
+  PPUnitType _unit = PPUnitType.Unit_KG;
+  PPDeviceConnectionState _connectionStatus = PPDeviceConnectionState.disconnected;
   double _weightValue = 0;
   String _measurementStateStr = '';
 
@@ -42,13 +44,12 @@ class _DeviceBananaState extends State<DeviceBanana> {
 
         _updateText('receiveDeviceData');
         //Receive broadcast data
-        PPPeripheralBanana.receiveDeviceData(ppDevice);
+        PPPeripheralJambul.receiveDeviceData(ppDevice);
 
         if (mounted) {
           setState(() {});
         }
       }
-
     });
 
     // Listen to the measurement data, only the last one of the multiple listeners will take effect, it is recommended that the app registers only one globally.
@@ -61,7 +62,6 @@ class _DeviceBananaState extends State<DeviceBanana> {
       switch (measurementState) {
         case PPMeasurementDataState.completed:
           _measurementStateStr = 'state:completed';
-
           _updateText(msg);
           break;
         case PPMeasurementDataState.measuringHeartRate:
@@ -85,6 +85,12 @@ class _DeviceBananaState extends State<DeviceBanana> {
     super.initState();
   }
 
+  Future<void> _handle(String title) async {
+    if (_connectionStatus != PPDeviceConnectionState.connected) {
+      _updateText('Device Disconnect');
+      return;
+    }
+  }
 
 
   void _updateText(String text) {
@@ -104,6 +110,9 @@ class _DeviceBananaState extends State<DeviceBanana> {
     });
   }
 
+
+
+
   @override
   void dispose() {
     _gridController.dispose();
@@ -116,7 +125,7 @@ class _DeviceBananaState extends State<DeviceBanana> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Banana')),
+      appBar: AppBar(title: const Text('Jambul')),
       body: Column(
         children: [
           Container(
@@ -188,6 +197,7 @@ class _DeviceBananaState extends State<DeviceBanana> {
 
                         final model = _gridItems[index];
                         final title = model.title;
+                        _handle(title);
 
                       },
                     );

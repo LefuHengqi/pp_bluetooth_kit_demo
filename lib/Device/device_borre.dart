@@ -1,28 +1,29 @@
-
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pp_bluetooth_kit_demo/Common/Define.dart';
 import 'package:pp_bluetooth_kit_demo/Common/custom_widgets.dart';
 import 'package:pp_bluetooth_kit_flutter/ble/pp_bluetooth_kit_manager.dart';
-import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_apple.dart';
+import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_borre.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_body_base_model.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
-import 'package:pp_bluetooth_kit_flutter/model/pp_device_user.dart';
+import 'package:pp_bluetooth_kit_flutter/model/pp_torre_user_model.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_wifi_result.dart';
+import 'package:pp_bluetooth_kit_flutter/utils/pp_scale_helper.dart';
 
-class DeviceApple extends StatefulWidget {
+class DeviceBorre extends StatefulWidget {
   final PPDeviceModel device;
 
-  const DeviceApple({Key? key, required this.device}) : super(key: key);
+  const DeviceBorre({Key? key, required this.device}) : super(key: key);
 
   @override
-  State<DeviceApple> createState() => _DeviceAppleState();
+  State<DeviceBorre> createState() => _DeviceBorreState();
 }
 
-class _DeviceAppleState extends State<DeviceApple> {
+class _DeviceBorreState extends State<DeviceBorre> {
 
   final ScrollController _gridController = ScrollController();
   final ScrollController _scrollController = ScrollController();
@@ -31,25 +32,69 @@ class _DeviceAppleState extends State<DeviceApple> {
   PPDeviceConnectionState _connectionStatus = PPDeviceConnectionState.disconnected;
   double _weightValue = 0;
   String _measurementStateStr = '';
+  Timer? _timer;
+
+  // Impersonate user information
+  final _userID = "12345678";
+  final _memberID = "999999";
 
   final List<GridItem> _gridItems = [
+    GridItem(DeviceMenuType.syncUserList.value),
+    GridItem(DeviceMenuType.deleteUser.value),
     GridItem(DeviceMenuType.syncTime.value),
     GridItem(DeviceMenuType.changeUnit.value),
-    GridItem(DeviceMenuType.fetchHistory.value),
+    GridItem(DeviceMenuType.getVisitorHistory.value),
+    GridItem(DeviceMenuType.getUserHistory.value),
     GridItem(DeviceMenuType.getPower.value),
+    GridItem(DeviceMenuType.searchWIFI.value),
     GridItem(DeviceMenuType.configNetwork.value),
     GridItem(DeviceMenuType.queryWifiConfig.value),
     GridItem(DeviceMenuType.getDeviceInfo.value),
+    GridItem(DeviceMenuType.restoreFactory.value),
+    GridItem(DeviceMenuType.turnOnHeartRate.value),
+    GridItem(DeviceMenuType.turnOffHeartRate.value),
+    GridItem(DeviceMenuType.getHeartRateSW.value),
+    GridItem(DeviceMenuType.turnOnImpedance.value),
+    GridItem(DeviceMenuType.turnOffImpedance.value),
+    GridItem(DeviceMenuType.getImpedanceSW.value),
+    GridItem(DeviceMenuType.syncDeviceLog.value),
+    GridItem(DeviceMenuType.userOTA.value),
   ];
 
   @override
   void initState() {
 
     final ppDevice = widget.device;
-    PPBluetoothKitManager.connectDevice(ppDevice, callBack: (state) {
-      _updateText('connection status：$state');
+    PPBluetoothKitManager.connectDevice(ppDevice, callBack: (state) async {
 
       _connectionStatus = state;
+
+      _updateText('connection status：$state');
+
+      if (state == PPDeviceConnectionState.connected) {
+
+        try {
+
+          final ret = await PPPeripheralBorre.selectDeviceUser(_userID, _memberID).timeout(const Duration(seconds: 3));
+          print("selectDeviceUser-return:$ret");
+        } on TimeoutException catch (e) {
+          final msg = 'selectDeviceUser - TimeoutException:$e';
+          print(msg);
+          _updateText(msg);
+        } catch(e) {
+          print('exception:$e');
+          _updateText('exception:$e');
+        }
+
+      }
+
+      // After the connection is successful, keep alive instructions are sent regularly to keep the device connected for a long time
+      _timer?.cancel();
+      _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+        PPPeripheralBorre.keepAlive();
+      });
+
+
       if (mounted) {
         setState(() {});
       }
@@ -65,7 +110,6 @@ class _DeviceAppleState extends State<DeviceApple> {
       switch (measurementState) {
         case PPMeasurementDataState.completed:
           _measurementStateStr = 'state:completed';
-
           _updateText(msg);
           break;
         case PPMeasurementDataState.measuringHeartRate:
@@ -95,12 +139,41 @@ class _DeviceAppleState extends State<DeviceApple> {
       return;
     }
 
+    final currentDevice = widget.device;
+
     try {
+
+
+      if (title == DeviceMenuType.syncUserList.value) {
+        _updateText('syncUserList');
+
+        final user = PPTorreUserModel(
+            userName: 'Tom',
+            userHeight: 170,
+            age: 20,
+            sex: PPUserGender.male,
+            unitType: PPUnitType.Unit_KG,
+            userID: _userID,
+            memberID: _memberID,
+            pIndex: 2,
+            currentWeight: 45);
+
+        final ret = await PPPeripheralBorre.syncUserList([user]);
+        _updateText('syncUserList-return:$ret');
+
+      }
+      if (title == DeviceMenuType.deleteUser.value) {
+        _updateText('deleteDeviceUser-userID:$_userID memberID:$_memberID');
+
+        final ret = await PPPeripheralBorre.deleteDeviceUser(_userID,_memberID);
+        _updateText('deleteDeviceUser-return:$ret');
+
+      }
 
       if (title == DeviceMenuType.syncTime.value) {
         _updateText('syncTime');
 
-        final ret = await PPPeripheralApple.syncTime();
+        final ret = await PPPeripheralBorre.syncTime(is24Hour:true);
 
         _updateText('syncTime-return:$ret');
 
@@ -108,20 +181,24 @@ class _DeviceAppleState extends State<DeviceApple> {
       if (title == DeviceMenuType.changeUnit.value) {
         _updateText('syncUnit:$_unit');
         _unit = _unit == PPUnitType.Unit_KG ? PPUnitType.Unit_LB : PPUnitType.Unit_KG;
-        final deviceUser = PPDeviceUser(unitType: _unit,age: 20, userHeight: 170, sex: PPUserGender.female);
-        await PPPeripheralApple.syncUnit(deviceUser);
+        await PPPeripheralBorre.syncUnit(_unit);
 
       }
-      if (title == DeviceMenuType.fetchHistory.value) {
-        _updateText('fetchHistoryData');
-        PPPeripheralApple.fetchHistoryData(callBack: (dataList, isSuccess){
+      if (title == DeviceMenuType.getVisitorHistory.value) {
+        _updateText('fetchTouristsHistoryData');
+        PPPeripheralBorre.fetchTouristsHistoryData(callBack: (dataList, isSuccess){
           _updateText('History data count:${dataList.length}');
-
-          if (isSuccess && dataList.length > 0) {
-            _updateText('Perform deletion of historical data:deleteHistoryData');
-            PPPeripheralApple.deleteHistoryData();
+          for (PPBodyBaseModel model in dataList) {
+            print('history weight:${model.weight} isSuccess:$isSuccess');
           }
 
+        });
+
+      }
+      if (title == DeviceMenuType.getUserHistory.value) {
+        _updateText('fetchUserHistoryData-userID:$_userID');
+        PPPeripheralBorre.fetchUserHistoryData(_userID, callBack: (dataList, isSuccess){
+          _updateText('History data count:${dataList.length}');
           for (PPBodyBaseModel model in dataList) {
             print('history weight:${model.weight} isSuccess:$isSuccess');
           }
@@ -131,12 +208,32 @@ class _DeviceAppleState extends State<DeviceApple> {
       }
       if (title == DeviceMenuType.getPower.value) {
         _updateText('fetchBatteryInfo');
-        PPPeripheralApple.fetchBatteryInfo(continuity: true, callBack: (power) {
+        PPPeripheralBorre.fetchBatteryInfo(continuity: true, callBack: (power) {
           _updateText('power:$power');
         });
 
       }
+      if (title == DeviceMenuType.searchWIFI.value) {
+
+        final isSupportWIFI = PPScaleHelper.isFuncTypeWifi(currentDevice.deviceFuncType);
+        if (!isSupportWIFI) {
+          _updateText('This device does not support Wi-Fi');
+          return;
+        }
+
+        _updateText('scanWifiNetworks');
+        _updateText('please wait...');
+        final list = await PPPeripheralBorre.scanWifiNetworks();
+        _updateText('wifiList:$list');
+      }
+
       if (title == DeviceMenuType.configNetwork.value) {
+
+        final isSupportWIFI = PPScaleHelper.isFuncTypeWifi(currentDevice.deviceFuncType);
+        if (!isSupportWIFI) {
+          _updateText('This device does not support Wi-Fi');
+          return;
+        }
 
         _showWifiInputDialog(context, (ssid, password) async {
           _updateText('configWifi');
@@ -144,19 +241,80 @@ class _DeviceAppleState extends State<DeviceApple> {
           _updateText('Please wait...');
 
           // ‘domain’ needs to use the domain name configured by your server
-          PPWifiResult result = await PPPeripheralApple.configWifi(domain: "http://120.79.144.170:6032", ssId: ssid, password: password);
+          PPWifiResult result = await PPPeripheralBorre.configWifi(domain: "http://120.79.144.170:9092", ssId: ssid, password: password);
           _updateText('Distribution network results:${result.success}');
         });
       }
       if (title == DeviceMenuType.queryWifiConfig.value) {
+
+        final isSupportWIFI = PPScaleHelper.isFuncTypeWifi(currentDevice.deviceFuncType);
+        if (!isSupportWIFI) {
+          _updateText('This device does not support Wi-Fi');
+          return;
+        }
+
         _updateText('fetchWifiInfo');
-        final ssId = await PPPeripheralApple.fetchWifiInfo().timeout(const Duration(seconds: 5));
+        final ssId = await PPPeripheralBorre.fetchWifiInfo().timeout(const Duration(seconds: 5));
         _updateText('ssId:$ssId');
       }
       if (title == DeviceMenuType.getDeviceInfo.value) {
         _updateText('fetchDeviceInfo');
-        final device180AModel = await PPPeripheralApple.fetchDeviceInfo().timeout(const Duration(seconds: 5));
+        final device180AModel = await PPPeripheralBorre.fetchDeviceInfo().timeout(const Duration(seconds: 5));
         _updateText('firmwareRevision:${device180AModel?.firmwareRevision} modelNumber:${device180AModel?.modelNumber}');
+      }
+      if (title == DeviceMenuType.restoreFactory.value) {
+        _updateText('resetDevice');
+        PPPeripheralBorre.clearDeviceData(PPClearDeviceDataType.all);
+      }
+      if (title == DeviceMenuType.turnOnHeartRate.value) {
+        _updateText('heartRateSwitchControl - open');
+        final ret = await PPPeripheralBorre.heartRateSwitchControl(true);
+        _updateText('heartRateSwitchControl return:$ret');
+      }
+      if (title == DeviceMenuType.turnOffHeartRate.value) {
+        _updateText('heartRateSwitchControl - close');
+        final ret = await PPPeripheralBorre.heartRateSwitchControl(false);
+        _updateText('heartRateSwitchControl return:$ret');
+      }
+      if (title == DeviceMenuType.getHeartRateSW.value) {
+        _updateText('fetchHeartRateSwitch');
+        final ret = await PPPeripheralBorre.fetchHeartRateSwitch();
+        _updateText('fetchHeartRateSwitch return:$ret');
+      }
+      if (title == DeviceMenuType.turnOnImpedance.value) {
+        _updateText('impedanceSwitchControl - open');
+        final ret = await PPPeripheralBorre.impedanceSwitchControl(true);
+        _updateText('impedanceSwitchControl return:$ret');
+      }
+      if (title == DeviceMenuType.turnOffImpedance.value) {
+        _updateText('impedanceSwitchControl - close');
+        final ret = await PPPeripheralBorre.impedanceSwitchControl(false);
+        _updateText('impedanceSwitchControl return:$ret');
+      }
+      if (title == DeviceMenuType.getImpedanceSW.value) {
+        _updateText('fetchImpedanceSwitch');
+        final ret = await PPPeripheralBorre.fetchImpedanceSwitch();
+        _updateText('fetchImpedanceSwitch return:$ret');
+      }
+      if (title == DeviceMenuType.syncDeviceLog.value) {
+        _updateText('syncDeviceLog');
+        final directory = await getApplicationDocumentsDirectory();
+        final logDirectory = '$directory/DeviceLog';
+        PPPeripheralBorre.syncDeviceLog(logDirectory, callBack: (progress, isFailed, filePath) {
+          _updateText('sync log-isFailed:$isFailed filePath:$filePath');
+        });
+
+      }
+      if (title == DeviceMenuType.userOTA.value) {
+        final isSupportWIFI = PPScaleHelper.isFuncTypeWifi(currentDevice.deviceFuncType);
+        if (!isSupportWIFI) {
+          _updateText('This device does not support Wi-Fi');
+          return;
+        }
+
+        _updateText('wifiOTA');
+        final ret = await PPPeripheralBorre.wifiOTA();
+        _updateText('wifiOTA return:$ret');
       }
 
 
@@ -260,13 +418,14 @@ class _DeviceAppleState extends State<DeviceApple> {
     _scrollController.dispose();
     PPBluetoothKitManager.stopScan();
     PPBluetoothKitManager.disconnect();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Apple')),
+      appBar: AppBar(title: const Text('Borre')),
       body: Column(
         children: [
           Container(
@@ -352,4 +511,3 @@ class _DeviceAppleState extends State<DeviceApple> {
     );
   }
 }
-

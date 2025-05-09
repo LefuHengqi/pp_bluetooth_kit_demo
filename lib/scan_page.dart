@@ -3,8 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_apple.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_banana.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_borre.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_coconut.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_egg.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_fish.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_grapes.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_hamburger.dart';
 import 'package:pp_bluetooth_kit_demo/Device/device_ice.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_jambul.dart';
+import 'package:pp_bluetooth_kit_demo/Device/device_torre.dart';
 import 'package:pp_bluetooth_kit_flutter/ble/pp_bluetooth_kit_manager.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
@@ -103,6 +110,62 @@ class _ScanPageState extends State<ScanPage> {
           context,
           MaterialPageRoute(
             builder: (context) => DeviceIce(device: device),
+          ),
+        );
+        break;
+      case PPDevicePeripheralType.jambul:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceJambul(device: device),
+          ),
+        );
+        break;
+      case PPDevicePeripheralType.torre:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceTorre(device: device),
+          ),
+        );
+        break;
+      case PPDevicePeripheralType.borre:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceBorre(device: device),
+          ),
+        );
+        break;
+      case PPDevicePeripheralType.fish:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceFish(device: device),
+          ),
+        );
+        break;
+      case PPDevicePeripheralType.hamburger:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceHamburger(device: device),
+          ),
+        );
+        break;
+      case PPDevicePeripheralType.egg:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceEgg(device: device),
+          ),
+        );
+        break;
+      case PPDevicePeripheralType.grapes:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceGrapes(device: device),
           ),
         );
         break;

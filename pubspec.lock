@@ -199,8 +199,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.0.11"
-      resolved-ref: "935cbcafed95f69303c2294f88fac932fe8b37aa"
+      ref: "0.0.18"
+      resolved-ref: e201bbc121d4dd02680813d84e861aa57ecfe254
       url: "https://gitee.com/shenzhen-lfscale/ppbluetoothkitflutter.git"
     source: git
     version: "0.0.1"

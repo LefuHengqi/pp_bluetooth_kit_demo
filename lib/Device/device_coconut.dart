@@ -57,9 +57,13 @@ class _DeviceCoconutState extends State<DeviceCoconut> {
     PPBluetoothKitManager.addMeasurementListener(callBack: (measurementState, dataModel, device) {
       _weightValue = dataModel.weight / 100.0;
 
+      final msg = 'weight:$_weightValue measurementState:$measurementState dataModel:${dataModel.toJson()}';
+      print(msg);
+
       switch (measurementState) {
         case PPMeasurementDataState.completed:
           _measurementStateStr = 'state:completed';
+          _updateText(msg);
           break;
         case PPMeasurementDataState.measuringHeartRate:
           _measurementStateStr = 'state:measuringHeartRate';
@@ -165,69 +169,7 @@ class _DeviceCoconutState extends State<DeviceCoconut> {
     });
   }
 
-  void _showWifiInputDialog(BuildContext context, Function(String ssid, String password) callBack) {
-    final TextEditingController _ssidController = TextEditingController();
-    final TextEditingController _passwordController = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Enter Wi-Fi information'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  const Text('SSID: ', style: TextStyle(fontSize: 14)),
-                  Expanded(
-                    child: TextField(
-                      controller: _ssidController,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter the Wi-Fi name',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  const Text('Password: ', style: TextStyle(fontSize: 14)),
-                  Expanded(
-                    child: TextField(
-                      controller: _passwordController,
-                      obscureText: false, // 明文显示
-                      decoration: const InputDecoration(
-                        hintText: 'Enter the Wi-Fi password',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('取消'),
-            ),
-            TextButton(
-              onPressed: () {
-                final ssid = _ssidController.text;
-                final password = _passwordController.text;
-                Navigator.pop(context);
-                callBack(ssid, password);
-              },
-              child: const Text('确定'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
 
   @override
@@ -252,12 +194,12 @@ class _DeviceCoconutState extends State<DeviceCoconut> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '${_connectionStatus == PPDeviceConnectionState.connected ? ' connected' : ' disconnect'}', // 替换_connectionStatus为你的实际连接状态变量
+                  '${_connectionStatus == PPDeviceConnectionState.connected ? ' connected' : ' disconnect'}',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'weight: $_weightValue KG    $_measurementStateStr', // 替换_weightValue为你的实际重量值变量
+                  'weight: $_weightValue KG    $_measurementStateStr',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],

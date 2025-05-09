@@ -61,6 +61,7 @@ class _DeviceIceState extends State<DeviceIce> {
       _updateText('connection status：$state');
 
       // After the connection is successful, keep alive instructions are sent regularly to keep the device connected for a long time
+      _timer?.cancel();
       _timer = Timer.periodic(Duration(seconds: 10), (timer) {
         PPPeripheralIce.keepAlive();
       });
@@ -75,9 +76,13 @@ class _DeviceIceState extends State<DeviceIce> {
     PPBluetoothKitManager.addMeasurementListener(callBack: (measurementState, dataModel, device) {
       _weightValue = dataModel.weight / 100.0;
 
+      final msg = 'weight:$_weightValue measurementState:$measurementState dataModel:${dataModel.toJson()}';
+      print(msg);
+
       switch (measurementState) {
         case PPMeasurementDataState.completed:
           _measurementStateStr = 'state:completed';
+          _updateText(msg);
           break;
         case PPMeasurementDataState.measuringHeartRate:
           _measurementStateStr = 'state:measuringHeartRate';
@@ -335,12 +340,12 @@ class _DeviceIceState extends State<DeviceIce> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '${_connectionStatus == PPDeviceConnectionState.connected ? ' connected' : ' disconnect'}', // 替换_connectionStatus为你的实际连接状态变量
+                  '${_connectionStatus == PPDeviceConnectionState.connected ? ' connected' : ' disconnect'}',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'weight: $_weightValue KG    $_measurementStateStr', // 替换_weightValue为你的实际重量值变量
+                  'weight: $_weightValue KG    $_measurementStateStr',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
