@@ -1,6 +1,6 @@
 # pp_bluetooth_kit_demo
 
-A new Flutter project.
+Flutter Bluetooth library plugin demo.
 
 ## Getting Started
 
