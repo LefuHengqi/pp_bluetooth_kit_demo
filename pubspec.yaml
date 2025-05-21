@@ -38,7 +38,7 @@ dependencies:
   pp_bluetooth_kit_flutter:
 #    path: /Users/lefu/liyp/flutterworkspace/ppsdkkit
     git:
-      url: https://gitee.com/shenzhen-lfscale/ppbluetoothkitflutter.git
+      url: https://github.com/LefuHengqi/pp_bluetooth_kit_flutter.git
       ref: 0.0.26
 
 
@@ -49,12 +49,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  ## Flutter蓝牙库插件
-  pp_bluetooth_kit_flutter:
-#    path: /Users/lefu/liyp/flutterworkspace/ppsdkkit
-    git:
-      url: https://gitee.com/shenzhen-lfscale/ppbluetoothkitflutter.git
-      ref: 0.0.26
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
