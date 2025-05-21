@@ -39,7 +39,7 @@ class _DeviceBorreState extends State<DeviceBorre> {
   final _memberID = "999999";
 
   final List<GridItem> _gridItems = [
-    GridItem(DeviceMenuType.syncUserList.value),
+    GridItem(DeviceMenuType.syncUserInfo.value),
     GridItem(DeviceMenuType.deleteUser.value),
     GridItem(DeviceMenuType.syncTime.value),
     GridItem(DeviceMenuType.changeUnit.value),
@@ -144,8 +144,8 @@ class _DeviceBorreState extends State<DeviceBorre> {
     try {
 
 
-      if (title == DeviceMenuType.syncUserList.value) {
-        _updateText('syncUserList');
+      if (title == DeviceMenuType.syncUserInfo.value) {
+        _updateText('syncUserInfo');
 
         final user = PPTorreUserModel(
             userName: 'Tom',
@@ -158,8 +158,8 @@ class _DeviceBorreState extends State<DeviceBorre> {
             pIndex: 2,
             currentWeight: 45);
 
-        final ret = await PPPeripheralBorre.syncUserList([user]);
-        _updateText('syncUserList-return:$ret');
+        final ret = await PPPeripheralBorre.syncUserInfo(user);
+        _updateText('syncUserInfo-return:$ret');
 
       }
       if (title == DeviceMenuType.deleteUser.value) {

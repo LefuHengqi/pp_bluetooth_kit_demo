@@ -21,6 +21,11 @@ Future<void> main() async {
   String content = await rootBundle.loadString(path);
   PPBluetoothKitManager.initSDK('lefub60060202a15ac8a', 'UCzWzna/eazehXaz8kKAC6WVfcL25nIPYlV9fXYzqDM=', content);
 
+  // final path = 'config/Device.json';
+  // String jsonStr = await rootBundle.loadString(path);
+  // print("jsonStr len:${jsonStr.length}");
+  // // printLongJson(jsonStr);
+  // PPBluetoothKitManager.setDeviceSetting(jsonStr);
 
 
   runApp(const MyApp());

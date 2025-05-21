@@ -7,7 +7,7 @@ enum DeviceMenuType {
   fetchHistory('Fetch History'),
   getVisitorHistory('Get visitor history'),
   getUserHistory('Get user history'),
-  syncUserList('Sync user list'),
+  syncUserInfo('Sync user info'),
   deleteUser('Delete user'),
   changeUnit('Change unit'),
   deleteHistoryData('Delete History Data'),

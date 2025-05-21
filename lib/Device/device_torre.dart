@@ -41,7 +41,7 @@ class _DeviceTorreState extends State<DeviceTorre> {
   final List<GridItem> _gridItems = [
     GridItem(DeviceMenuType.startMeasure.value),
     GridItem(DeviceMenuType.stopMeasure.value),
-    GridItem(DeviceMenuType.syncUserList.value),
+    GridItem(DeviceMenuType.syncUserInfo.value),
     GridItem(DeviceMenuType.deleteUser.value),
     GridItem(DeviceMenuType.syncTime.value),
     GridItem(DeviceMenuType.changeUnit.value),
@@ -157,8 +157,8 @@ class _DeviceTorreState extends State<DeviceTorre> {
         _updateText('startMeasure-return:$ret');
 
       }
-      if (title == DeviceMenuType.syncUserList.value) {
-        _updateText('syncUserList');
+      if (title == DeviceMenuType.syncUserInfo.value) {
+        _updateText('syncUserInfo');
 
         final user = PPTorreUserModel(
             userName: 'Tom',
@@ -171,8 +171,8 @@ class _DeviceTorreState extends State<DeviceTorre> {
             pIndex: 2,
             currentWeight: 45);
 
-        final ret = await PPPeripheralTorre.syncUserList([user]);
-        _updateText('syncUserList-return:$ret');
+        final ret = await PPPeripheralTorre.syncUserInfo(user);
+        _updateText('syncUserInfo-return:$ret');
 
       }
       if (title == DeviceMenuType.deleteUser.value) {
@@ -317,7 +317,9 @@ class _DeviceTorreState extends State<DeviceTorre> {
       if (title == DeviceMenuType.syncDeviceLog.value) {
         _updateText('syncDeviceLog');
         final directory = await getApplicationDocumentsDirectory();
-        final logDirectory = '$directory/DeviceLog';
+        print("directory: $directory");
+        print("directory1: ${directory.path}");
+        final logDirectory = '${directory.path}/DeviceLog';
         PPPeripheralTorre.syncDeviceLog(logDirectory, callBack: (progress, isFailed, filePath) {
           _updateText('sync log-isFailed:$isFailed filePath:$filePath');
         });
