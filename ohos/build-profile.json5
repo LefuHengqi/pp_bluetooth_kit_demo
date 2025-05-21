@@ -37,9 +37,9 @@
         }
       ]
     },
-    {
-      "name": "pp_bluetooth_kit_flutter",
-      "srcPath": "../../ppsdkkit/ohos",
-    }
+//    {
+//      "name": "pp_bluetooth_kit_flutter",
+//      "srcPath": "../../ppsdkkit/ohos",
+//    }
   ]
 }
