@@ -17,6 +17,6 @@
     "@ohos/flutter_ohos": "file:./har/flutter.har",
     "@ohos/flutter_module": "file:./entry",
 //    "pp_bluetooth_kit_flutter": "file:./har/pp_bluetooth_kit_flutter.har"
-    "pp_bluetooth_kit_flutter": "file:../../ppsdkkit/ohos"
+//    "pp_bluetooth_kit_flutter": "file:../../ppsdkkit/ohos"
   }
 }
