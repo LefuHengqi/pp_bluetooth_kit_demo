@@ -60,12 +60,6 @@ class _DeviceFishState extends State<DeviceFish> {
 
           _updateText(msg);
           break;
-        case PPMeasurementDataState.measuringHeartRate:
-          _measurementStateStr = 'state:measuringHeartRate';
-          break;
-        case PPMeasurementDataState.measuringBodyFat:
-          _measurementStateStr = 'state:measuringBodyFat';
-          break;
         default:
           _measurementStateStr = 'state:processData';
           break;
