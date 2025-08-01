@@ -43,7 +43,7 @@ After you have completed configuring the device, please go to [ the Personal Cen
 
 ### 1.5 SDK Integration
 
-Add the following references to the**pubspec.yaml**file in the Flutter project**: ​**
+Add the following references to the **pubspec.yaml** file in the Flutter project **: ​**
 
 ```
 pp_bluetooth_kit_flutter:
@@ -54,20 +54,20 @@ pp_bluetooth_kit_flutter:
 
 Create a new folder in the root directory of the Flutter project, named: config; rename the **config** file downloaded in step 1.4 to: lefu.config, and add the corresponding configuration to the **pubspec.yaml** file:
 
-```JSON
+```
 assets:
   - config/lefu.config
 ```
 
 Execute the following command to install the SDK:
 
-```JSON
+```
 flutter pub get
 ```
 
 ### 1.6 SDK Initialization
 
-It is recommended to initialize the SDK in the**main.dart**file, where**AppKey**and**AppSecret**are the information applied for in Step 1.2
+It is recommended to initialize the SDK in the **main.dart** file, where **AppKey** and **AppSecret** are the information applied for in Step 1.2
 
 ```
 final path = 'config/lefu.config';
