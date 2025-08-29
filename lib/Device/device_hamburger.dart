@@ -38,7 +38,7 @@ class _DeviceHamburgerState extends State<DeviceHamburger> {
     final ppDevice = widget.device;
     PPBluetoothKitManager.startScan((ppDevice) {
 
-      if (ppDevice.deviceMac == ppDevice.deviceMac) {
+      if (widget.device.deviceMac == ppDevice.deviceMac) {
 
         PPBluetoothKitManager.stopScan();
 
@@ -128,7 +128,7 @@ class _DeviceHamburgerState extends State<DeviceHamburger> {
     _gridController.dispose();
     _scrollController.dispose();
     PPBluetoothKitManager.stopScan();
-    PPBluetoothKitManager.disconnect();
+    PPPeripheralHamburger.unReceiveDeviceData(widget.device);
     super.dispose();
   }
 
