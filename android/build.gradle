@@ -5,6 +5,12 @@ buildscript {
     repositories {
         maven { url "https://raw.githubusercontent.com/LefuHengqi/PPBaseKit-Android/main" }
 
+        maven { url 'https://maven.aliyun.com/mvn/search' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin/' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+
         google()
         mavenCentral()
     }
@@ -19,6 +25,12 @@ allprojects {
     repositories {
         maven { url "https://raw.githubusercontent.com/LefuHengqi/PPBaseKit-Android/main" }
 
+        maven { url 'https://maven.aliyun.com/mvn/search' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin/' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+
         google()
         mavenCentral()
     }
@@ -32,6 +44,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
