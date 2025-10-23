@@ -36,7 +36,7 @@ class _DeviceBananaState extends State<DeviceBanana> {
 
     PPBluetoothKitManager.startScan((ppDevice) {
 
-      if (ppDevice.deviceMac == ppDevice.deviceMac) {
+      if (widget.device.deviceMac == ppDevice.deviceMac) {
 
         PPBluetoothKitManager.stopScan();
 
@@ -109,7 +109,7 @@ class _DeviceBananaState extends State<DeviceBanana> {
     _gridController.dispose();
     _scrollController.dispose();
     PPBluetoothKitManager.stopScan();
-    PPBluetoothKitManager.disconnect();
+    PPPeripheralBanana.unReceiveDeviceData(widget.device);
     super.dispose();
   }
 

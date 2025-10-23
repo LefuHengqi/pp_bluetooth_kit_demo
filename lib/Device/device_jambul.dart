@@ -38,7 +38,7 @@ class _DeviceJambulState extends State<DeviceJambul> {
 
     PPBluetoothKitManager.startScan((ppDevice) {
 
-      if (ppDevice.deviceMac == ppDevice.deviceMac) {
+      if (widget.device.deviceMac == ppDevice.deviceMac) {
 
         PPBluetoothKitManager.stopScan();
 
@@ -118,7 +118,7 @@ class _DeviceJambulState extends State<DeviceJambul> {
     _gridController.dispose();
     _scrollController.dispose();
     PPBluetoothKitManager.stopScan();
-    PPBluetoothKitManager.disconnect();
+    PPPeripheralJambul.unReceiveDeviceData(widget.device);
     super.dispose();
   }
 
