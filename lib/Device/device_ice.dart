@@ -130,7 +130,13 @@ class _DeviceIceState extends State<DeviceIce> {
       if (title == DeviceMenuType.fetchHistory.value) {
         _updateText('fetchHistoryData');
         PPPeripheralIce.fetchHistoryData(callBack: (dataList, isSuccess){
-          _updateText('History data count:${dataList.length}');
+          _updateText('History data count:${dataList.length} ');
+
+          dataList.forEach((element) {
+            _updateText('weight:${element.getPpWeightKg()} impedance:${element.z20KhzLeftArmEnCode} ');
+          });
+
+          print('fetchHistoryData History data:${dataList.toString()}');
 
           if (isSuccess && dataList.length > 0) {
             _updateText('Perform deletion of historical data:deleteHistoryData');
