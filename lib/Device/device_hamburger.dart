@@ -8,6 +8,7 @@ import 'package:pp_bluetooth_kit_flutter/ble/pp_peripheral_hamburger.dart';
 import 'package:pp_bluetooth_kit_flutter/enums/pp_scale_enums.dart';
 import 'package:pp_bluetooth_kit_flutter/model/pp_device_model.dart';
 
+import '../Common/Define.dart';
 
 class DeviceHamburger extends StatefulWidget {
   final PPDeviceModel device;
@@ -19,42 +20,41 @@ class DeviceHamburger extends StatefulWidget {
 }
 
 class _DeviceHamburgerState extends State<DeviceHamburger> {
-
   final ScrollController _gridController = ScrollController();
   final ScrollController _scrollController = ScrollController();
   String _dynamicText = '';
   PPUnitType _unit = PPUnitType.Unit_KG;
-  PPDeviceConnectionState _connectionStatus = PPDeviceConnectionState.disconnected;
+  PPDeviceConnectionState _connectionStatus =
+      PPDeviceConnectionState.disconnected;
   double _weightValue = 0;
   String _measurementStateStr = '';
 
   final List<GridItem> _gridItems = [
-
+    GridItem(DeviceMenuType.startMeasure.value),
+    GridItem(DeviceMenuType.stopMeasure.value),
   ];
 
   @override
   void initState() {
-
     final ppDevice = widget.device;
-    PPBluetoothKitManager.startScan((ppDevice) {
-
-      if (widget.device.deviceMac == ppDevice.deviceMac) {
-
-        PPBluetoothKitManager.stopScan();
-
-        _updateText('receiveDeviceData');
-        //Receive broadcast data
-        PPPeripheralHamburger.receiveDeviceData(ppDevice);
-
-        if (mounted) {
-          setState(() {});
-        }
-      }
-
-    });
+    PPBluetoothKitManager.stopScan();
+    // PPBluetoothKitManager.startScan((ppDevice) {
+    //   if (widget.device.deviceMac == ppDevice.deviceMac) {
+    //     PPBluetoothKitManager.stopScan();
+    //
+    //     _updateText('receiveDeviceData');
+    //     //Receive broadcast data
+    //     PPPeripheralHamburger.receiveDeviceData(ppDevice);
+    //
+    //     if (mounted) {
+    //       setState(() {});
+    //     }
+    //   }
+    // });
 
     // Listen to the measurement data, only the last one of the multiple listeners will take effect.
-    PPBluetoothKitManager.addKitchenMeasurementListener(callBack: (measurementState, dataModel, device) {
+    PPBluetoothKitManager.addKitchenMeasurementListener(
+        callBack: (measurementState, dataModel, device) {
       _weightValue = dataModel.weight / 10.0;
 
       final msg = 'weight:$_weightValue measurementState:$measurementState';
@@ -82,26 +82,46 @@ class _DeviceHamburgerState extends State<DeviceHamburger> {
   }
 
   Future<void> _handle(String title) async {
-    if (_connectionStatus != PPDeviceConnectionState.connected) {
-      _updateText('Device Disconnect');
-      return;
-    }
-
     try {
+      if (title == DeviceMenuType.startMeasure.value) {
+        _updateText('startMeasure:$_unit');
+
+        _updateText('receiveDeviceData');
+        //Receive broadcast data
+        final ret = await PPPeripheralHamburger.receiveDeviceData(widget.device).timeout(const Duration(seconds: 3));
+
+        _updateText('receiveDeviceData return:$ret');
+
+        if (mounted) {
+          setState(() {});
+        }
+      }
 
 
+    if (title == DeviceMenuType.stopMeasure.value) {
+        _updateText('startMeasure');
+
+        _updateText('unReceiveDeviceData');
+        //Receive broadcast data
+        final ret = await PPPeripheralHamburger.unReceiveDeviceData(widget.device).timeout(const Duration(seconds: 3));
+
+        _updateText('unReceiveDeviceData return:$ret');
+
+        if (mounted) {
+          setState(() {});
+        }
+      }
 
     } on TimeoutException catch (e) {
       final msg = 'TimeoutException:$e';
       print(msg);
       _updateText(msg);
-    } catch(e) {
+    } catch (e) {
       final msg = 'Exception:$e';
       print(msg);
       _updateText(msg);
     }
   }
-
 
   void _updateText(String text) {
     _dynamicText = _dynamicText + '\n$text';
@@ -120,15 +140,12 @@ class _DeviceHamburgerState extends State<DeviceHamburger> {
     });
   }
 
-
-
-
   @override
   void dispose() {
     _gridController.dispose();
     _scrollController.dispose();
-    PPBluetoothKitManager.stopScan();
-    PPPeripheralHamburger.unReceiveDeviceData(widget.device);
+    // PPBluetoothKitManager.stopScan();
+    // PPPeripheralHamburger.unReceiveDeviceData(widget.device);
     super.dispose();
   }
 
@@ -146,12 +163,14 @@ class _DeviceHamburgerState extends State<DeviceHamburger> {
               children: [
                 Text(
                   'Broadcasting Device',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'weight: $_weightValue g    $_measurementStateStr',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -178,8 +197,6 @@ class _DeviceHamburgerState extends State<DeviceHamburger> {
               ),
             ),
           ),
-
-
           Expanded(
             flex: 1,
             child: Container(
@@ -204,11 +221,9 @@ class _DeviceHamburgerState extends State<DeviceHamburger> {
                     return GridActionItem(
                       item: _gridItems[index],
                       onTap: () async {
-
                         final model = _gridItems[index];
                         final title = model.title;
                         _handle(title);
-
                       },
                     );
                   },
