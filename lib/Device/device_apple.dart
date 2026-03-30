@@ -131,8 +131,8 @@ class _DeviceAppleState extends State<DeviceApple> {
       }
       if (title == DeviceMenuType.getPower.value) {
         _updateText('fetchBatteryInfo');
-        PPPeripheralApple.fetchBatteryInfo(continuity: true, callBack: (power) {
-          _updateText('power:$power');
+        PPPeripheralApple.fetchBatteryInfo(continuity: true, callBack: (int power, int? lumen) {
+          _updateText('power:$power lumen:$lumen');
         });
 
       }

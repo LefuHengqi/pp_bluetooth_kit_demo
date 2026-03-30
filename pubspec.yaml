@@ -39,7 +39,7 @@ dependencies:
 #    path: ../ppsdkkit
     git:
       url: https://github.com/LefuHengqi/pp_bluetooth_kit_flutter.git
-      ref: 0.0.47
+      ref: 0.0.50
 
 
   # The following adds the Cupertino Icons font to your application.

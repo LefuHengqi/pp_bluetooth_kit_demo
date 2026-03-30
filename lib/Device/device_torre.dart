@@ -228,8 +228,8 @@ class _DeviceTorreState extends State<DeviceTorre> {
       }
       if (title == DeviceMenuType.getPower.value) {
         _updateText('fetchBatteryInfo');
-        PPPeripheralTorre.fetchBatteryInfo(continuity: true, callBack: (power) {
-          _updateText('power:$power');
+        PPPeripheralTorre.fetchBatteryInfo(continuity: true, callBack: (int power, int? lumen) {
+          _updateText('power:$power lumen:$lumen');
         });
 
       }

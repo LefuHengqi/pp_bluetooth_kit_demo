@@ -128,8 +128,8 @@ class _DeviceCoconutState extends State<DeviceCoconut> {
       }
       if (title == DeviceMenuType.getPower.value) {
         _updateText('fetchBatteryInfo');
-        PPPeripheralCoconut.fetchBatteryInfo(continuity: true, callBack: (power) {
-          _updateText('power:$power');
+        PPPeripheralCoconut.fetchBatteryInfo(continuity: true, callBack: (int power, int? lumen) {
+          _updateText('power:$power lumen:$lumen');
         });
 
       }

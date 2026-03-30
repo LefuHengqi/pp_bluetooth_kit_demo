@@ -152,8 +152,8 @@ class _DeviceIceState extends State<DeviceIce> {
       }
       if (title == DeviceMenuType.getPower.value) {
         _updateText('fetchBatteryInfo');
-        PPPeripheralIce.fetchBatteryInfo(continuity: true, callBack: (power) {
-          _updateText('power:$power');
+        PPPeripheralIce.fetchBatteryInfo(continuity: true, callBack: (int power, int? lumen) {
+          _updateText('power:$power lumen:$lumen');
         });
 
       }

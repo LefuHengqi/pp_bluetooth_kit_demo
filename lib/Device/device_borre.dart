@@ -208,8 +208,8 @@ class _DeviceBorreState extends State<DeviceBorre> {
       }
       if (title == DeviceMenuType.getPower.value) {
         _updateText('fetchBatteryInfo');
-        PPPeripheralBorre.fetchBatteryInfo(continuity: true, callBack: (power) {
-          _updateText('power:$power');
+        PPPeripheralBorre.fetchBatteryInfo(continuity: true, callBack: (int power, int? lumen) {
+          _updateText('power:$power lumen:$lumen');
         });
 
       }
