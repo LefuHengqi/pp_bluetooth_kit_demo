@@ -199,8 +199,8 @@ class _DeviceTorreState extends State<DeviceTorre> {
 
       }
       if (title == DeviceMenuType.changeUnit.value) {
-        _updateText('syncUnit:$_unit');
         _unit = _unit == PPUnitType.Unit_KG ? PPUnitType.Unit_LB : PPUnitType.Unit_KG;
+        _updateText('syncUnit:$_unit');
         await PPPeripheralTorre.syncUnit(_unit);
 
       }

@@ -122,8 +122,8 @@ class _DeviceIceState extends State<DeviceIce> {
 
       }
       if (title == DeviceMenuType.changeUnit.value) {
-        _updateText('syncUnit:$_unit');
         _unit = _unit == PPUnitType.Unit_KG ? PPUnitType.Unit_LB : PPUnitType.Unit_KG;
+        _updateText('syncUnit:$_unit');
         await PPPeripheralIce.syncUnit(_unit);
 
       }

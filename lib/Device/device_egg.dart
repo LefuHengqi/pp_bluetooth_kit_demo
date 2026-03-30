@@ -84,8 +84,9 @@ class _DeviceEggState extends State<DeviceEgg> {
     try {
 
       if (title == DeviceMenuType.changeUnit.value) {
-        _updateText('syncUnit:$_unit');
+
         _unit = _unit == PPUnitType.UnitG ? PPUnitType.UnitMLWater : PPUnitType.UnitG;
+        _updateText('syncUnit:$_unit');
         final ret = await PPPeripheralEgg.syncUnit(_unit).timeout(const Duration(seconds: 3));
         _updateText('syncUnit-return:$ret');
       }

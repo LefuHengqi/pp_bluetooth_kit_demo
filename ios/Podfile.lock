@@ -27,8 +27,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  pp_bluetooth_kit_flutter: 24cbfeecf1f68e4185e2b0ef36e77e29ca14ea9b
+  path_provider_foundation: 2a68637f8a62df7f6e790a428d1bdf72cb4e2d59
+  pp_bluetooth_kit_flutter: d8d787d914af4e66d54eeab6d956357b74305a6c
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
 
 PODFILE CHECKSUM: c4c93c5f6502fe2754f48404d3594bf779584011

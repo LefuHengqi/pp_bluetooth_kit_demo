@@ -106,8 +106,9 @@ class _DeviceAppleState extends State<DeviceApple> {
 
       }
       if (title == DeviceMenuType.changeUnit.value) {
-        _updateText('syncUnit:$_unit');
+
         _unit = _unit == PPUnitType.Unit_KG ? PPUnitType.Unit_LB : PPUnitType.Unit_KG;
+        _updateText('syncUnit:$_unit');
         final deviceUser = PPDeviceUser(unitType: _unit,age: 20, userHeight: 170, sex: PPUserGender.female);
         await PPPeripheralApple.syncUnit(deviceUser);
 
